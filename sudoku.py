@@ -24,17 +24,18 @@ Nums = [[Num.copy() for i in range(N)] for i in range(N)]
 #		[2,0,0,0,0,0,0,6,4],
 #		[0,0,0,0,0,6,0,2,9]
 #		]
-Icells = [
-		[3,0,4,2,9,0,7,8,1],
-		[1,5,0,7,0,4,6,0,9],
-		[0,9,7,6,1,8,0,3,5],
-		[8,4,0,0,2,9,5,0,3],
-		[7,1,0,5,0,3,2,6,0],
-		[0,2,3,4,7,6,0,9,8],
-		[9,0,2,3,4,0,8,5,6],
-		[4,8,0,0,6,7,3,1,0],
-		[6,3,0,8,5,2,9,0,7],
-		]
+#Icells = [
+#		[3,0,4,2,9,0,7,8,1],
+#		[1,5,0,7,0,4,6,0,9],
+#		[0,9,7,6,1,8,0,3,5],
+#		[8,4,0,0,2,9,5,0,3],
+#		[7,1,0,5,0,3,2,6,0],
+#		[0,2,3,4,7,6,0,9,8],
+#		[9,0,2,3,4,0,8,5,6],
+#		[4,8,0,0,6,7,3,1,0],
+#		[6,3,0,8,5,2,9,0,7],
+#		]
+Icells = [[0 for x in range(9)] for y in range(N)]
 NbAns = 0
 NbGiv = 0
 NbAnsDet = 0
@@ -42,7 +43,6 @@ Max = 50
 
 def main():
 	global Icells, Nums, NbAns, Max
-	print('--- Sudoku Analyser ---')
 	m = 0
 	while NbAns < N*N and m < 6:
 		init()
@@ -64,7 +64,6 @@ def main():
 				decideS()
 				decideH()
 				decideV()
-				print 'SHV'
 			elif(m%6 == 3):
 				decideS()
 				decideV()
@@ -205,10 +204,23 @@ def answer(x,y,i):
 			if type(Nums[xn][yn]) == set:
 				Nums[xn][yn].discard(i)
 
+def read():
+	global Icells
+	print 'Enter a sudoku problem indicating blank spaces with 0'
+	for x in range(N):
+		row = raw_input()
+		for y in range(N):
+			cell = row[y:y+1]
+			if int(cell) in [0,1,2,3,4,5,6,7,8,9]:
+				Icells[x][y] = int(cell)
+			else :
+				print 'Found any errors in input data!'
+				exit()
+	print 'Analysing...'
+
 def show():
 	global Icells,Nums,NbAns,NbGiv
-	print  '\033[31m' + 'Red' + '\033[0m' + ': Given numbers'
-	print  '\033[32m' + 'Red' + '\033[0m' + ': Numbers for blank spaces'
+	print '\nCompleted!'
 	print '[Given problem]   [Analysis result]'
 	print " +---+---+---+     +---+---+---+"
 	for x in range(N):
@@ -236,13 +248,17 @@ def show():
 		print(row) 
 		if x%3 == 2 :
 			print " +---+---+---+     +---+---+---+"
+	print  '\033[31m' + 'Red' + '\033[0m' + ': Given numbers'
+	print  '\033[32m' + 'Red' + '\033[0m' + ': Numbers for blank spaces'
 	print 'Analyse Rate: ', (NbAns-NbGiv), '/', (N*N - NbGiv)
 	if NbAns - NbGiv == N*N - NbGiv:
-		print 'Anlysis completed!', u'\U0001F617'
+		print 'Analysis completed!', u'\U0001F617'
 	else :
 		print 'Analysis failed...', u'\U0001F611'
 	print ('--- --- --- --- --- --- --- ---\n')
 
 if __name__ == '__main__' :
+	print('--- Sudoku Analyser ---')
+	read()
 	main()
 	show()
