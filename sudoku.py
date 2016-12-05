@@ -2,47 +2,24 @@
 
 # [Sudoku Analyser]
 # Author : Yuichiro SUGA
-# Last update : 2016-12-04
-# This program analyses a sudoku problem with the input into Icells 2nd
-# order list. Even when you get instisfiying result, you may have a proper one
-# after changing the order of algorithm in "decide" module.
+# Last update : 2016-12-05
+# This program analyses a sudoku problem with the input from line input.
+# This program analyses the sudoku problem switching the order of sevral
+# algorithm (compareS,V,H modules).
 # This program is designed to be run on the macintosh terminal.
-
 
 import os
 N = 9
 Num = set([1,2,3,4,5,6,7,8,9])
 Nums = [[Num.copy() for i in range(N)] for i in range(N)]
-#Icells = [
-#		[0,8,0,5,7,0,2,0,0],
-#		[0,0,9,6,0,0,0,0,0],
-#		[4,0,1,0,9,0,0,0,0],
-#		[9,0,4,0,0,3,0,0,0],
-#		[0,0,0,0,0,0,3,0,0],
-#		[0,5,0,0,0,0,0,7,8],
-#		[0,9,0,0,0,7,5,0,0],
-#		[2,0,0,0,0,0,0,6,4],
-#		[0,0,0,0,0,6,0,2,9]
-#		]
-#Icells = [
-#		[3,0,4,2,9,0,7,8,1],
-#		[1,5,0,7,0,4,6,0,9],
-#		[0,9,7,6,1,8,0,3,5],
-#		[8,4,0,0,2,9,5,0,3],
-#		[7,1,0,5,0,3,2,6,0],
-#		[0,2,3,4,7,6,0,9,8],
-#		[9,0,2,3,4,0,8,5,6],
-#		[4,8,0,0,6,7,3,1,0],
-#		[6,3,0,8,5,2,9,0,7],
-#		]
 Icells = [[0 for x in range(9)] for y in range(N)]
 NbAns = 0
 NbGiv = 0
-NbAnsDet = 0
 Max = 50
 
-def main():
+def analyse():
 	global Icells, Nums, NbAns, Max
+	print 'Analysing...'
 	m = 0
 	while NbAns < N*N and m < 6:
 		init()
@@ -53,34 +30,31 @@ def main():
 					searchS(x,y)
 					check(x,y)
 			if (m%6 == 0):
-				decideS()
-				decideH()
-				decideV()
+				compareS()
+				compareH()
+				compareV()
 			elif(m%6 == 1):
-				decideV()
-				decideS()
-				decideH()
+				compareV()
+				compareS()
+				compareH()
 			elif(m%6 == 2):
-				decideS()
-				decideH()
-				decideV()
+				compareS()
+				compareH()
+				compareV()
 			elif(m%6 == 3):
-				decideS()
-				decideV()
-				decideH()
+				compareS()
+				compareV()
+				compareH()
 			elif(m%6 == 4):
-				decideH()
-				decideS()
-				decideV()
+				compareH()
+				compareS()
+				compareV()
 			elif(m%6 == 5):
-				decideH()
-				decideV()
-				decideS()
+				compareH()
+				compareV()
+				compareS()
 		m += 1
-		#print m, NbAns
-
-
-
+	print '\nCompleted!'
 
 def init():
 	global Icells, NbAns, NbGiv
@@ -92,8 +66,8 @@ def init():
 				NbGiv += 1
 
 #Search vertically and Horizontally
-#Search the same number in the same line and row
-#If find the same numver, remove it from Nums
+#Search the same number within the same line and row
+#If find the same numver, remove it from possibilities for each blank space
 def searchHV(x,y):
 	for n in range(N):
 			remove(x,y,n,y)
@@ -113,10 +87,10 @@ def check(x,y):
 		answer(x,y,Nums[x][y].pop())
 
 #Compare vertically
-def decideV():
+def compareV():
 	global Nums
 	for xn in range(N):
-		nbi = [0 for i in range(N)]#nomber of apparation i 
+		nbi = [0 for i in range(N)]#number of apparation i
 		for yn in range(N):
 			for i in range(N):
 				if type(Nums[xn][yn]) == int :
@@ -134,10 +108,10 @@ def decideV():
 					answer(xn,yn,i+1)
 
 #Compare holizontally
-def decideH():
+def compareH():
 	global Nums
 	for yn in range(N):
-		nbi = [0 for i in range(N)]#nomber of apparation i 
+		nbi = [0 for i in range(N)]
 		for xn in range(N):
 			for i in range(N):
 				if type(Nums[xn][yn]) == int :
@@ -155,7 +129,7 @@ def decideH():
 					answer(xn,yn,i+1)
 
 #Compare within square
-def decideS():
+def compareS():
 	global Nums
 	for sx in range(3):
 		for sy in range(3):
@@ -178,7 +152,7 @@ def decideS():
 						if nbi[i]==1 and i+1 in Nums[xn][yn]:
 							answer(xn,yn,i+1)
 
-#remove function
+#Remove a certain number from the possibilities for a certain blank space
 # x,  y: coordinate of reference number
 #xn, yn: coordinate of cell to delete
 def remove(x,y,xn,yn):
@@ -216,11 +190,10 @@ def read():
 			else :
 				print 'Found any errors in input data!'
 				exit()
-	print 'Analysing...'
 
 def show():
 	global Icells,Nums,NbAns,NbGiv
-	print '\nCompleted!'
+	print 'Number of blan spaces to fill in:', (N*N-NbGiv)
 	print '[Given problem]   [Analysis result]'
 	print " +---+---+---+     +---+---+---+"
 	for x in range(N):
@@ -255,10 +228,10 @@ def show():
 		print 'Analysis completed!', u'\U0001F617'
 	else :
 		print 'Analysis failed...', u'\U0001F611'
-	print ('--- --- --- --- --- --- --- ---\n')
 
 if __name__ == '__main__' :
 	print('--- Sudoku Analyser ---')
 	read()
-	main()
+	analyse()
 	show()
+	print ('--- --- --- --END-- --- --- ---\n')
